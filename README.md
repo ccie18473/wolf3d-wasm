@@ -27,7 +27,7 @@ cargo run --release
 
 ## Controls
 
-| Key                   | Action            |
+| Key(s)                | Action            |
 | --------------------- | ----------------- |
 | Up Arrow              | `Move Forward`    |
 | Down Arrow            | `Move Backward`   |
@@ -39,17 +39,8 @@ cargo run --release
 | RShift + Right Arrow  | `Fast Right Turn` |
 | Alt + Left Arrow      | `Strafe Left`     |
 | Alt + Right Arrow     | `Strafe Right`    |
-| Ctrl                  | `Jump (Fire)`     |
+| Ctrl                  | `Jump`            |
 | Space Bar             | `Open Doors`      |
-
-| Controls      | Qwerty  | Azerty  |
-| ------------- | ------- | ------- |
-| Move Forward  | `W`     | `Z`     |
-| Look Left     | `A`     | `Q`     |
-| Move Backward | `S`     | `S`     |
-| Look Right    | `D`     | `D`     |
-| Jump          | `SPACE` | `SPACE` |
-| Interact      | `F`     | `F`     |
 
 ## Author
 
