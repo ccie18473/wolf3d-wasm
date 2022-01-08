@@ -40,6 +40,15 @@ cargo run --release
 | Ctrl                  | `Jump (Fire)`     |
 | Space Bar             | `Open Doors`      |
 
+| Controls      | Qwerty  | Azerty  |
+| ------------- | ------- | ------- |
+| Move Forward  | `W`     | `Z`     |
+| Look Left     | `A`     | `Q`     |
+| Move Backward | `S`     | `S`     |
+| Look Right    | `D`     | `D`     |
+| Jump          | `SPACE` | `SPACE` |
+| Interact      | `F`     | `F`     |
+
 ## Author
 
 * [Antonio Soares](https://github.com/ccie18473)
