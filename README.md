@@ -2,11 +2,11 @@
 
 ## Description
 
-Based on the excellent work made by * [Nhyarlathotep] (https://github.com/Nhyarlathotep)
+Based on the excellent work made by * [Nhyarlathotep](https://github.com/Nhyarlathotep)
 
-* [A Wolf3D clone written in Rust for WebAssembly] (https://github.com/Nhyarlathotep/Wolf3D-wasm)
+[A Wolf3D clone written in Rust for WebAssembly](https://github.com/Nhyarlathotep/Wolf3D-wasm)
 
-* [A Wolf3D Tile Map Editor made with React] (https://github.com/Nhyarlathotep/Wolf3D-react-editor)
+[A Wolf3D Tile Map Editor made with React](https://github.com/Nhyarlathotep/Wolf3D-react-editor)
 
 The code was adapted in order to use the ggez/gwg framework and also to implement the original game movement keys.
 
