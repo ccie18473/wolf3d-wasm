@@ -27,6 +27,8 @@ cargo run --release
 
 ## Controls
 
+| Key                   | Action            |
+| --------------------- | ----------------- |
 | Up Arrow              | `Move Forward`    |
 | Down Arrow            | `Move Backward`   |
 | Left Arrow            | `Turn Left`       |
