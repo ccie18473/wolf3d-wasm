@@ -24,9 +24,9 @@ pub enum Action {
 }
 
 pub struct Player {
-    pub pos: Vector3f,
-    pub dir: Vector2f,
-    pub plane: Vector2f,
+    pub pos: Vector3f, // position (vector "pos")
+    pub dir: Vector2f,  //  direction (vector "dir")
+    pub plane: Vector2f, // camera plane (vector "plane")
     pub frame: u32,
 
     pub gravity: f32,
@@ -47,7 +47,7 @@ impl Player {
             rotation: Vector2f::default(),
             action: Action::None,
         };
-        player.update_dir(std::f32::consts::PI / 2.0, 1.0);
+        player.update_dir_plane(std::f32::consts::PI / 2.0, 1.0);
         player
     }
 
@@ -117,9 +117,13 @@ impl Player {
             }
         } else if keycode == ALT_KEY {
             if pressed {
-                self.velocity.x = 0.05;
-                self.rotation.x = -0.05;
-                self.action = Action::Strafe;
+                //if self.action == Action::LookLeft {
+                    self.rotation.x = -1.0;
+                    self.velocity.x = 1.0;
+                //} else if self.action == Action::LookRight {
+                //    self.rotation.x = 1.0;
+                //    self.velocity.x = 1.0;
+                //}
             } else {
                 self.velocity.x = 0.0;
                 self.rotation.x = 0.0;
@@ -283,7 +287,7 @@ impl Player {
                 let dest = second.unwrap();
 
                 let tmp = self.pos;
-                self.update_dir(dest.link_dir(source), 1.0);
+                self.update_dir_plane(dest.link_dir(source), 1.0);
                 self.pos.x = dest.link_x(source, &tmp) + self.dir.x * speed;
                 self.pos.y = dest.link_y(source, &tmp) + self.dir.y * speed;
                 self.pos.z = dest.pos.z;
@@ -291,12 +295,19 @@ impl Player {
         }
     }
 
-    fn update_dir(&mut self, mut new_rotation: f32, delta: f32) {
+    fn update_dir_plane(&mut self, mut new_rotation: f32, delta: f32) {
         new_rotation *= delta;
         self.dir.rotate(new_rotation);
         self.plane.rotate(new_rotation);
     }
-
+    fn update_dir_only(&mut self, mut new_rotation: f32, delta: f32) {
+        if self.action != Action::Strafe {
+            self.action = Action::Strafe;
+            new_rotation *= delta;
+            self.dir.rotate(new_rotation);
+            //self.plane.rotate(new_rotation);
+        }
+    }
     pub fn update(&mut self, map: &mut Map, delta: f32) {
         if self.action == Action::Open {
             let hit = crate::engine::rayobject::Ray::new(&self, Vector2f::default()).cast(map);
@@ -311,15 +322,15 @@ impl Player {
         if self.velocity.z != 0.0 || self.pos.z > 0.0 {
             self.update_gravity(map, delta);
         }
-        // velocity.y is not used
-        //if self.velocity.y != 0.0 {
-        //    self.update_pos(map, delta);
-        //}
-        if self.velocity.x != 0.0 {
+        if self.velocity.x != 0.0 && self.rotation.x == 0.0 {
             self.update_pos(map, delta);
         }
-        if self.rotation.x != 0.0 {
-            self.update_dir(self.rotation.x, delta);
+        else if self.velocity.x == 0.0 && self.rotation.x != 0.0 {
+            self.update_dir_plane(self.rotation.x, delta);
+        }
+        else if self.velocity.x != 0.0 && self.rotation.x != 0.0 {
+            self.update_pos(map, delta);
+            self.update_dir_only(std::f32::consts::PI / 4.0, 1.0);
         }
     }
 }
