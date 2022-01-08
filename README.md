@@ -2,7 +2,7 @@
 
 ## Description
 
-Based on the excellent work made by * [Nhyarlathotep](https://github.com/Nhyarlathotep)
+Based on the excellent work made by [Nhyarlathotep](https://github.com/Nhyarlathotep)
 
 [A Wolf3D clone written in Rust for WebAssembly](https://github.com/Nhyarlathotep/Wolf3D-wasm)
 
@@ -27,18 +27,18 @@ cargo run --release
 
 ## Controls
 
-| Up Arrow = `Move Forward`                 |
-| Down Arrow = `Move Backward`              |
-| Left Arrow = `Turn Left`                  |
-| Right Arrow = `Turn Right`                |
-| RShift + Up Arrow = `Run Forward`         |
-| RShift + Down Arrow = `Run Backward`      |
-| RShift + Left Arrow = `Fast Left Turn`    |
-| RShift + Right Arrow = `Fast Right Turn`  |
-| Alt + Left Arrow = `Strafe Left`          |
-| Alt + Right Arrow = `Strafe Right`        |
-| Ctrl = `Jump (Fire)`                      |
-| Space Bar = `Open Doors`                  |
+| Up Arrow              | `Move Forward`    |
+| Down Arrow            | `Move Backward`   |
+| Left Arrow            | `Turn Left`       |
+| Right Arrow           | `Turn Right`      |
+| RShift + Up Arrow     | `Run Forward`     |
+| RShift + Down Arrow   | `Run Backward`    |
+| RShift + Left Arrow   | `Fast Left Turn`  |
+| RShift + Right Arrow  | `Fast Right Turn` |
+| Alt + Left Arrow      | `Strafe Left`     |
+| Alt + Right Arrow     | `Strafe Right`    |
+| Ctrl                  | `Jump (Fire)`     |
+| Space Bar             | `Open Doors`      |
 
 ## Author
 
