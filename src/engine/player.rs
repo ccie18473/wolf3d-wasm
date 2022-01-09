@@ -7,8 +7,8 @@ const DOWN_KEY: KeyCode = ggez::event::KeyCode::Down;
 
 const RSHIFT_KEY: KeyCode = ggez::event::KeyCode::RightShift; // Run
 const SPACE_KEY: KeyCode = ggez::event::KeyCode::Space; // Open
-const CTRL_KEY: KeyCode = ggez::event::KeyCode::LeftControl; // Fire --> Jump
-const ALT_KEY: KeyCode = ggez::event::KeyCode::LeftAlt; // Strafe --> NA
+const LCTRL_KEY: KeyCode = ggez::event::KeyCode::LeftControl; // Jump
+const LALT_KEY: KeyCode = ggez::event::KeyCode::LeftAlt; // Strafe
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Action {
@@ -20,18 +20,18 @@ pub enum Action {
     Run,
     Open,
     Jump,
-    Strafe,
+    Strafe, // strafing is moving sideways
 }
 
 pub struct Player {
-    pub pos: Vector3f, // position (vector "pos")
-    pub dir: Vector2f,  //  direction (vector "dir")
+    pub pos: Vector3f,   // position (vector "pos")
+    pub dir: Vector2f,   //  direction (vector "dir")
     pub plane: Vector2f, // camera plane (vector "plane")
     pub frame: u32,
 
     pub gravity: f32,
-    pub velocity: Vector3f,
-    pub rotation: Vector2f,
+    pub velocity: Vector3f, // velocity vector, applies to "pos" vector
+    pub rotation: Vector2f, // rotation vector, applies to "dir" and "plane" vectors
     pub action: Action,
 }
 
@@ -39,14 +39,18 @@ impl Player {
     pub fn new(pos: Vector3f) -> Player {
         let mut player = Player {
             pos,
+            // dir vector and plane initial values
+            // define that dir and plane are perpendicular
+            // and that the FOV (Field of Vision) is 66°
             dir: Vector2f::new(1.0, 0.0),
-            plane: Vector2f::new(0.0, 0.66),
+            plane: Vector2f::new(0.0, 0.66), // plane vector initial value
             frame: 0,
             gravity: -3.8,
             velocity: Vector3f::default(),
             rotation: Vector2f::default(),
             action: Action::None,
         };
+        // starts with a +90° rotation
         player.update_dir_plane(std::f32::consts::PI / 2.0, 1.0);
         player
     }
@@ -115,21 +119,23 @@ impl Player {
                 self.rotation.x /= 2.0;
                 self.action = Action::None;
             }
-        } else if keycode == ALT_KEY {
+        } else if keycode == LALT_KEY {
             if pressed {
-                //if self.action == Action::LookLeft {
-                    self.rotation.x = -1.0;
+                if self.action == Action::LookLeft {
+                    self.velocity.x = -1.0;
+                    self.rotation.x = 0.0;
+                    self.action = Action::Strafe;
+                } else if self.action == Action::LookRight {
                     self.velocity.x = 1.0;
-                //} else if self.action == Action::LookRight {
-                //    self.rotation.x = 1.0;
-                //    self.velocity.x = 1.0;
-                //}
+                    self.rotation.x = 0.0;
+                    self.action = Action::Strafe;
+                }
             } else {
                 self.velocity.x = 0.0;
                 self.rotation.x = 0.0;
                 self.action = Action::None;
             }
-        } else if keycode == CTRL_KEY {
+        } else if keycode == LCTRL_KEY {
             if pressed && self.velocity.z == 0.0 {
                 self.velocity.z = 1.65;
                 self.action = Action::Jump;
@@ -140,7 +146,8 @@ impl Player {
             self.action = Action::Open;
         }
     }
-
+    // update pos.z vector
+    // with velocity.z
     fn update_gravity(&mut self, map: &Map, delta: f32) {
         let mut future_z = self.pos.z + self.velocity.z * delta;
         let inside_wall = map.get(&self.pos);
@@ -221,11 +228,25 @@ impl Player {
             self.pos.y = new_y;
         }
     }
-
+    // update pos vector
+    // with velocity.x and dir
+    // and modified dir
+    // if straging
     fn update_pos(&mut self, map: &mut Map, delta: f32) {
         let speed = self.velocity.x * delta;
-        let new_x = self.pos.x + self.dir.x * speed;
-        let new_y = self.pos.y + self.dir.y * speed;
+        let new_x: f32;
+        let new_y: f32;
+        if self.action != Action::Strafe {
+            new_x = self.pos.x + self.dir.x * speed;
+            new_y = self.pos.y + self.dir.y * speed;
+        // cos +/-90° = 0
+        // sin +90° = 1, sin -90° = -1
+        } else {
+            let new_dir_x = -self.dir.y;
+            let new_dir_y = self.dir.x;
+            new_x = self.pos.x + new_dir_x * speed;
+            new_y = self.pos.y + new_dir_y * speed;
+        }
 
         match map.portals_at(
             Vector3f::new(new_x.floor(), new_y.floor(), self.pos.z.floor()),
@@ -294,19 +315,16 @@ impl Player {
             }
         }
     }
-
+    // rotate dir vector
+    // rotate plane vector
     fn update_dir_plane(&mut self, mut new_rotation: f32, delta: f32) {
         new_rotation *= delta;
         self.dir.rotate(new_rotation);
         self.plane.rotate(new_rotation);
     }
-    fn update_dir_only(&mut self, mut new_rotation: f32, delta: f32) {
-        if self.action != Action::Strafe {
-            self.action = Action::Strafe;
-            new_rotation *= delta;
-            self.dir.rotate(new_rotation);
-        }
-    }
+    // update pos vector
+    // update dir vector
+    // update plane vector
     pub fn update(&mut self, map: &mut Map, delta: f32) {
         if self.action == Action::Open {
             let hit = crate::engine::rayobject::Ray::new(&self, Vector2f::default()).cast(map);
@@ -317,19 +335,15 @@ impl Player {
                 }
             }
             self.action = Action::None;
-        }
+        } // jump
         if self.velocity.z != 0.0 || self.pos.z > 0.0 {
             self.update_gravity(map, delta);
-        }
-        if self.velocity.x != 0.0 && self.rotation.x == 0.0 {
+        } // move forward/backward , starfe left/right
+        if self.velocity.x != 0.0 {
             self.update_pos(map, delta);
-        }
-        else if self.velocity.x == 0.0 && self.rotation.x != 0.0 {
+        } // look left/right
+        if self.rotation.x != 0.0 {
             self.update_dir_plane(self.rotation.x, delta);
-        }
-        else if self.velocity.x != 0.0 && self.rotation.x != 0.0 {
-            self.update_pos(map, delta);
-            self.update_dir_only(std::f32::consts::PI / 4.0, 1.0);
         }
     }
 }

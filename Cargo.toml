@@ -10,5 +10,5 @@ good-web-game = "0.4.1"
 miniquad = "=0.3.0-alpha.37"
 cgmath = { version = "0.17", features = ["mint"] }
 
-[profile.release]
-lto = true
+#[profile.release]
+#lto = true
