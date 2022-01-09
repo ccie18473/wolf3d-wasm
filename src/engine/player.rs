@@ -305,7 +305,6 @@ impl Player {
             self.action = Action::Strafe;
             new_rotation *= delta;
             self.dir.rotate(new_rotation);
-            //self.plane.rotate(new_rotation);
         }
     }
     pub fn update(&mut self, map: &mut Map, delta: f32) {
