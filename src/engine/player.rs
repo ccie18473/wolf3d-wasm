@@ -56,14 +56,6 @@ impl Player {
     }
 
     pub fn handle_inputs(&mut self, keycode: KeyCode, pressed: bool) {
-        println!("---------------------------------------");
-        println!("pos x: {}", self.pos.x);
-        println!("pos y: {}", self.pos.y);
-        println!("pos z: {}", self.pos.z);
-        println!("dir x: {}", self.dir.x);
-        println!("dir y: {}", self.dir.y);
-        println!("plane x: {}", self.plane.x);
-        println!("plane y: {}", self.plane.y);
 
         if keycode == UP_KEY {
             if pressed {

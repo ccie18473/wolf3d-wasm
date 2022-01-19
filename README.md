@@ -2,13 +2,17 @@
 
 ## Description
 
-Based on the excellent work made by [Nhyarlathotep](https://github.com/Nhyarlathotep)
+Based on the work made by [Nhyarlathotep](https://github.com/Nhyarlathotep)
 
 [A Wolf3D clone written in Rust for WebAssembly](https://github.com/Nhyarlathotep/Wolf3D-wasm)
 
 [A Wolf3D Tile Map Editor made with React](https://github.com/Nhyarlathotep/Wolf3D-react-editor)
 
+And on [Lode's Computer Graphics Tutorial](https://lodev.org/cgtutor/raycasting.html)
+
 The code was adapted in order to use the ggez/gwg framework and also to implement the original game movement keys.
+
+The code was commented as much as possible to facilitate the understanding of the raycasting technology implementation.
 
 ![](wolf3d.jpg)
 
@@ -50,3 +54,4 @@ cargo run --release
 
 This project is licensed under the [MIT] License - see the LICENSE.md file for details
 
+The Wolfenstein textures are copyrighted by id Software.
